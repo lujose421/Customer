@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: Swagger Project - OpenAPI 3.0
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: customer
+    description: Operations about customer
+paths:
+  /api/v1/customer/registre:
+    post:
+      tags:
+        - customer
+      summary: Create customer
+      description: Creation of customer in mongoDB database.
+      operationId: createCustomer
+      requestBody:
+        description: Created customer object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        201:
+          description: succesfuly created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+  /api/v1/customer/list:
+    get:
+      tags:
+        - customer
+      summary: Get customer
+      description: Customer list from mongoDB.
+      operationId: getCustomer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerDTO'
+        204:
+          description: Customer not content
+          content:
+            application/json:
+              schema:
+                default: []
+
+  /api/v1/customer/findbyid/{id}:
+    get:
+      tags:
+        - customer
+      summary: Get customer by id
+      description: Get customer.
+      operationId: getCustomerById
+      parameters:
+        - name: id
+          in: path
+          description: find by id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        404:
+          description: Customer not found
+  /api/v1/customer/updatebyid/{id}:
+    put:
+      tags:
+        - customer
+      summary: Update customer by id
+      description: Update customer.
+      operationId: updateCustomerById
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent user in the mongoDB
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        200:
+          description: succesfuly updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        204:
+          description: Customer not content
+          content:
+            application/json:
+              schema:
+                default: []
+  /api/v1/customer/deletebyid/{id}:
+    delete:
+      tags:
+        - customer
+      summary: Delete customer by id
+      description: Delete an existent customer in the database mongoDB.
+      operationId: deleteCustomerById
+      parameters:
+        - name: id
+          in: path
+          description: The id that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: succesfuly deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseDTO'
+        404:
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseDTO'
+
+components:
+  schemas:
+    CustomerDTO:
+      type: object
+      properties:
+        id:
+          type: string
+
+        name:
+          type: string
+          example: John
+          nullable: false
+        lastName:
+          type: string
+          example: James
+          nullable: false
+        documentType:
+          type: string
+          enum:
+            - "DNI"
+            - "RUC"
+          example: "DNI"
+          nullable: false
+        documentNumber:
+          type: string
+          example: "45871236"
+          nullable: false
+        clientType:
+          type: string
+          enum:
+            - "PERSONAL"
+            - "EMPRESA"
+          example: "PERSONAL"
+          nullable: false
+      required:
+        - name
+        - lastName
+        - documentType
+        - documentNumber
+        - clientType
+
+    ResponseDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Menssage response"
+  requestBodies:
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CustomerDTO'
