@@ -17,6 +17,7 @@ public class Customer {
     private String id;
     private String name;
     private String lastName;
+    private String razon;
     private CustomerDTO.DocumentTypeEnum documentType;
     private String documentNumber;
     private CustomerDTO.ClientTypeEnum clientType;

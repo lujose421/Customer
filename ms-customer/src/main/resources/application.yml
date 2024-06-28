@@ -21,3 +21,8 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://josephadmin:7pc2I3a1YT2iFJcC@mongodb101.bldukdv.mongodb.net/dbcustomer
+
+springdoc:
+  swagger-ui:
+#    enabled: true
+    path: index.html

@@ -11,6 +11,7 @@ public class AppUtils {
         newCustomerDTO.setId(customer.getId());
         newCustomerDTO.setName(customer.getName());
         newCustomerDTO.setLastName(customer.getLastName());
+        newCustomerDTO.setRazon(customer.getRazon());
         newCustomerDTO.setDocumentType(customer.getDocumentType());
         newCustomerDTO.setDocumentNumber(customer.getDocumentNumber());
         newCustomerDTO.setClientType(customer.getClientType());
@@ -22,6 +23,7 @@ public class AppUtils {
         newCustomer.setId(customerDTO.getId());
         newCustomer.setName(customerDTO.getName());
         newCustomer.setLastName(customerDTO.getLastName());
+        newCustomer.setRazon(customerDTO.getRazon());
         newCustomer.setDocumentType(customerDTO.getDocumentType());
         newCustomer.setDocumentNumber(customerDTO.getDocumentNumber());
         newCustomer.setClientType(customerDTO.getClientType());

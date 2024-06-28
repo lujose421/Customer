@@ -76,6 +76,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>com.nttdata.customer.MsCustomerApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -96,19 +97,20 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/swagger/OpenApi.yml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <!--							<packageName>com.nttdata.customer.openapi</packageName>-->
+                            <!--<packageName>com.nttdata.customer.openapi</packageName>-->
                             <apiPackage>com.nttdata.customer.openapi.api</apiPackage>
                             <modelPackage>com.nttdata.customer.openapi.model</modelPackage>
-                            <!--							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>-->
+                            <!--<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>-->
                             <configOptions>
                                 <reactive>true</reactive>
                                 <openApiNullable>false</openApiNullable>
-                                <!--								<useSpringBoot3>true</useSpringBoot3>-->
+                                <!--<useSpringBoot3>true</useSpringBoot3>-->
+                                <OpenAPI2SpringBoot>true</OpenAPI2SpringBoot>
                                 <useSwaggerUI>true</useSwaggerUI>
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>
-                                <!--								<useSpringController>false</useSpringController>-->
-                                <!--								<skipServerWebExchange>true</skipServerWebExchange>-->
+                                <!--<useSpringController>false</useSpringController>-->
+                                <!--<skipServerWebExchange>true</skipServerWebExchange>-->
                             </configOptions>
                         </configuration>
                     </execution>
