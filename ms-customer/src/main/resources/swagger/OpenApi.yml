@@ -140,11 +140,15 @@ components:
         name:
           type: string
           example: John
-          nullable: true
+          nullable: false
+          pattern: '^[A-Za-z]+$'
+          minLength: 1
         lastName:
           type: string
           example: James
-          nullable: true
+          nullable: false
+          pattern: '^[A-Za-z]+$'
+          minLength: 1
         razon:
           type: string
           example: "EMPRESA TRANSPORTE SAC"
@@ -156,10 +160,13 @@ components:
             - RUC
           example: DNI
           nullable: false
+          minLength: 1
         documentNumber:
           type: string
           example: 45871236
           nullable: false
+          pattern: '^[0-9]+$'
+          minLength: 1
         clientType:
           type: string
           enum:
@@ -167,7 +174,10 @@ components:
             - business
           example: staff
           nullable: false
+          minLength: 1
       required:
+        - name
+        - lastName
         - documentType
         - documentNumber
         - clientType
