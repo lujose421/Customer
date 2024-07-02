@@ -13,7 +13,7 @@ paths:
       tags:
         - Customer
       summary: Get customer
-      description: Customer list from mongoDB.
+      description: CustomerEntity list from mongoDB.
       operationId: getCustomer
       responses:
         200:
@@ -25,7 +25,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/CustomerDTO'
         204:
-          description: Customer not content
+          description: CustomerEntity not content
           content:
             application/json:
               schema:
@@ -42,6 +42,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomerDTO'
+        required: true
       responses:
         201:
           description: success created
@@ -71,7 +72,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CustomerDTO'
         404:
-          description: Customer not found
+          description: CustomerEntity not found
     put:
       tags:
         - Customer
@@ -91,6 +92,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomerDTO'
+        required: true
       responses:
         200:
           description: success updated
@@ -99,7 +101,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CustomerDTO'
         204:
-          description: Customer not content
+          description: CustomerEntity not content
           content:
             application/json:
               schema:
@@ -125,7 +127,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseDTO'
         404:
-          description: Customer not found
+          description: CustomerEntity not found
           content:
             application/json:
               schema:
@@ -134,25 +136,30 @@ components:
   schemas:
     CustomerDTO:
       type: object
+      required:
+        - name
+        - lastName
+        - documentType
+        - documentNumber
+        - clientType
       properties:
         id:
           type: string
         name:
           type: string
           example: John
-          nullable: false
           pattern: '^[A-Za-z]+$'
+          nullable: false
           minLength: 1
         lastName:
           type: string
           example: James
-          nullable: false
           pattern: '^[A-Za-z]+$'
+          nullable: false
           minLength: 1
-        razon:
+        reason:
           type: string
           example: "EMPRESA TRANSPORTE SAC"
-          nullable: true
         documentType:
           type: string
           enum:
@@ -160,27 +167,18 @@ components:
             - RUC
           example: DNI
           nullable: false
-          minLength: 1
         documentNumber:
           type: string
           example: 45871236
-          nullable: false
           pattern: '^[0-9]+$'
-          minLength: 1
+          nullable: false
         clientType:
           type: string
           enum:
-            - staff
-            - business
+            - STAFF
+            - BUSINESS
           example: staff
           nullable: false
-          minLength: 1
-      required:
-        - name
-        - lastName
-        - documentType
-        - documentNumber
-        - clientType
     ResponseDTO:
       type: object
       properties:

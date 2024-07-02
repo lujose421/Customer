@@ -51,8 +51,8 @@
         <appender-ref ref="ERROR_FILE" />
     </root>
 
-    <!-- Set the logger level for com.nttdata.customer package -->
-    <logger name="com.nttdata.customer" level="DEBUG" additivity="false">
+    <!-- Set the logger level for com.nttdata.customerEntity package -->
+    <logger name="com.nttdata.customerEntity" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="ERROR_FILE" />
