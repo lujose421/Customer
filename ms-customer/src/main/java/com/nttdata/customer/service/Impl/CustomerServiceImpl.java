@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    private static final String COURSE_NOT_FOUND_MESSAGE = "CustomerEntity with ID %s does not exist";
+    private static final String CUSTOMER_NOT_FOUND_MESSAGE = "CustomerEntity with ID %s does not exist";
     private static final String CUSTOMER_ALREADY_EXISTS = "CustomerEntity with Document %s already exist";
 
     @Autowired
@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
         logger.info("service getCustomerById - ini");
 
         return this.customerRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException(COURSE_NOT_FOUND_MESSAGE, id)))
+                .switchIfEmpty(Mono.error(new NotFoundException(CUSTOMER_NOT_FOUND_MESSAGE, id)))
                 .doOnNext(customerEntity -> logger.info("customerEntity by id service: {}", customerEntity))
                 .flatMap(customerEntity -> Mono.just(ResponseEntity.ok(AppUtils.entityToDto(customerEntity))))
                 .doOnTerminate(() -> logger.info("service getCustomerById - end"));
