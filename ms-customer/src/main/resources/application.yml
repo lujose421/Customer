@@ -1,9 +1,28 @@
 
+#spring:
+#  application:
+#    name: ms-product
+#  config:
+#    import: configserver:http://localhost:8086
+#  profiles:
+#    active: default
+
+server:
+  port: 8080
+
 spring:
+  cloud:
+    config:
+      enabled: false
+      import-check:
+        enabled: false
   application:
     name: ms-product
-  config:
-    import: configserver:http://localhost:8086
-  profiles:
-    active: default
+  data:
+    mongodb:
+      uri: mongodb+srv://josephadmin:7pc2I3a1YT2iFJcC@mongodb101.bldukdv.mongodb.net/dbcustomer
 
+springdoc:
+  swagger-ui:
+    #    enabled: true
+    path: index.html

@@ -1,30 +1,33 @@
 package com.nttdata.customer.utils;
 
-import com.nttdata.customer.openapi.model.CustomerDTO;
-import com.nttdata.customer.pesistence.entity.Customer;
-import org.springframework.beans.BeanUtils;
+import com.banking.openapi.model.CustomerDTO;
+import com.nttdata.customer.pesistence.entity.CustomerEntity;
+import com.nttdata.customer.pesistence.entity.enums.ClientType;
+import com.nttdata.customer.pesistence.entity.enums.DocumentType;
 
 public class AppUtils {
 
-    public static CustomerDTO entityToDto(Customer customer) {
+    public static CustomerDTO entityToDto(CustomerEntity customer) {
         CustomerDTO newCustomerDTO = new CustomerDTO();
         newCustomerDTO.setId(customer.getId());
         newCustomerDTO.setName(customer.getName());
         newCustomerDTO.setLastName(customer.getLastName());
-        newCustomerDTO.setDocumentType(customer.getDocumentType());
+        newCustomerDTO.setReason(customer.getReason());
+        newCustomerDTO.setDocumentType(CustomerDTO.DocumentTypeEnum.fromValue(customer.getDocumentType().getValue()));
         newCustomerDTO.setDocumentNumber(customer.getDocumentNumber());
-        newCustomerDTO.setClientType(customer.getClientType());
+        newCustomerDTO.setClientType(CustomerDTO.ClientTypeEnum.fromValue(customer.getClientType().getValue()));
         return newCustomerDTO;
     }
 
-    public static Customer dtoToEntity(CustomerDTO customerDTO) {
-        Customer newCustomer = new Customer();
+    public static CustomerEntity dtoToEntity(CustomerDTO customerDTO) {
+        CustomerEntity newCustomer = new CustomerEntity();
         newCustomer.setId(customerDTO.getId());
         newCustomer.setName(customerDTO.getName());
         newCustomer.setLastName(customerDTO.getLastName());
-        newCustomer.setDocumentType(customerDTO.getDocumentType());
+        newCustomer.setReason(customerDTO.getReason());
+        newCustomer.setDocumentType(DocumentType.valueOf(customerDTO.getDocumentType().getValue()));
         newCustomer.setDocumentNumber(customerDTO.getDocumentNumber());
-        newCustomer.setClientType(customerDTO.getClientType());
+        newCustomer.setClientType(ClientType.valueOf(customerDTO.getClientType().getValue()));
         return newCustomer;
     }
 }

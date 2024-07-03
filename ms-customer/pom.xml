@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.10</version>
+        <version>3.3.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.nttdata.customer</groupId>
@@ -27,31 +27,46 @@
         <url/>
     </scm>
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
-            <version>1.6.14</version>
+            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
+
+        <!-- new add dependency - start -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+        <!-- new add dependency - end -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -62,12 +77,6 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-client</artifactId>
-            <version>3.1.3</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -76,6 +85,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>com.nttdata.customer.MsCustomerApplication</mainClass> <!-- revisar por que colocan esto -->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -87,28 +97,31 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>5.4.0</version>
+                <version>7.1.0</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/swagger/OpenApi.yml</inputSpec>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/swagger/OpenApi.yml
+                            </inputSpec>
                             <generatorName>spring</generatorName>
-                            <!--							<packageName>com.nttdata.customer.openapi</packageName>-->
-                            <apiPackage>com.nttdata.customer.openapi.api</apiPackage>
-                            <modelPackage>com.nttdata.customer.openapi.model</modelPackage>
-                            <!--							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>-->
+                            <packageName>com.banking.openapi</packageName>
+                            <apiPackage>com.banking.openapi.api</apiPackage>
+                            <modelPackage>com.banking.openapi.model</modelPackage>
+                            <typeMappings>
+                                <typeMapping>DateTime=Instant</typeMapping>
+                                <typeMapping>Date=Date</typeMapping>
+                            </typeMappings>
                             <configOptions>
                                 <reactive>true</reactive>
-                                <openApiNullable>false</openApiNullable>
-                                <!--								<useSpringBoot3>true</useSpringBoot3>-->
+                                <openApiNullable>true</openApiNullable>
+                                <useSpringBoot3>true</useSpringBoot3>
                                 <useSwaggerUI>true</useSwaggerUI>
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>
-                                <!--								<useSpringController>false</useSpringController>-->
-                                <!--								<skipServerWebExchange>true</skipServerWebExchange>-->
                             </configOptions>
                         </configuration>
                     </execution>

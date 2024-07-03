@@ -5,13 +5,34 @@ info:
 servers:
   - url: http://localhost:8080
 tags:
-  - name: customer
+  - name: Customer
     description: Operations about customer
 paths:
-  /api/v1/customer/registre:
+  /api/v1/customer:
+    get:
+      tags:
+        - Customer
+      summary: Get customer
+      description: CustomerEntity list from mongoDB.
+      operationId: getCustomer
+      responses:
+        200:
+          description: success get
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerDTO'
+        204:
+          description: CustomerEntity not content
+          content:
+            application/json:
+              schema:
+                default: []
     post:
       tags:
-        - customer
+        - Customer
       summary: Create customer
       description: Creation of customer in mongoDB database.
       operationId: createCustomer
@@ -21,40 +42,18 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomerDTO'
+        required: true
       responses:
         201:
-          description: succesfuly created
+          description: success created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerDTO'
-  /api/v1/customer/list:
+  /api/v1/customer/{id}:
     get:
       tags:
-        - customer
-      summary: Get customer
-      description: Customer list from mongoDB.
-      operationId: getCustomer
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CustomerDTO'
-        204:
-          description: Customer not content
-          content:
-            application/json:
-              schema:
-                default: []
-
-  /api/v1/customer/findbyid/{id}:
-    get:
-      tags:
-        - customer
+        - Customer
       summary: Get customer by id
       description: Get customer.
       operationId: getCustomerById
@@ -67,17 +66,16 @@ paths:
             type: string
       responses:
         200:
-          description: OK
+          description: success get
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerDTO'
         404:
-          description: Customer not found
-  /api/v1/customer/updatebyid/{id}:
+          description: CustomerEntity not found
     put:
       tags:
-        - customer
+        - Customer
       summary: Update customer by id
       description: Update customer.
       operationId: updateCustomerById
@@ -94,23 +92,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomerDTO'
+        required: true
       responses:
         200:
-          description: succesfuly updated
+          description: success updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerDTO'
         204:
-          description: Customer not content
+          description: CustomerEntity not content
           content:
             application/json:
               schema:
                 default: []
-  /api/v1/customer/deletebyid/{id}:
     delete:
       tags:
-        - customer
+        - Customer
       summary: Delete customer by id
       description: Delete an existent customer in the database mongoDB.
       operationId: deleteCustomerById
@@ -122,72 +120,68 @@ paths:
           schema:
             type: string
       responses:
-        200:
-          description: succesfuly deleted
+        default:
+          description: success delete
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseDTO'
         404:
-          description: Customer not found
+          description: CustomerEntity not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseDTO'
-
 components:
   schemas:
     CustomerDTO:
       type: object
-      properties:
-        id:
-          type: string
-
-        name:
-          type: string
-          example: John
-          nullable: false
-        lastName:
-          type: string
-          example: James
-          nullable: false
-        documentType:
-          type: string
-          enum:
-            - "DNI"
-            - "RUC"
-          example: "DNI"
-          nullable: false
-        documentNumber:
-          type: string
-          example: "45871236"
-          nullable: false
-        clientType:
-          type: string
-          enum:
-            - "PERSONAL"
-            - "EMPRESA"
-          example: "PERSONAL"
-          nullable: false
       required:
         - name
         - lastName
         - documentType
         - documentNumber
         - clientType
-
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: John
+          pattern: '^[A-Za-z]+$'
+          nullable: false
+          minLength: 1
+        lastName:
+          type: string
+          example: James
+          pattern: '^[A-Za-z]+$'
+          nullable: false
+          minLength: 1
+        reason:
+          type: string
+          example: "EMPRESA TRANSPORTE SAC"
+        documentType:
+          type: string
+          enum:
+            - DNI
+            - RUC
+          example: DNI
+          nullable: false
+        documentNumber:
+          type: string
+          example: 45871236
+          pattern: '^[0-9]+$'
+          nullable: false
+        clientType:
+          type: string
+          enum:
+            - STAFF
+            - BUSINESS
+          example: staff
+          nullable: false
     ResponseDTO:
       type: object
       properties:
         message:
           type: string
-          example: "Menssage response"
-  requestBodies:
-    UserArray:
-      description: List of user object
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/CustomerDTO'
+          example: "Message response"

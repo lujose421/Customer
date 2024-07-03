@@ -9,21 +9,21 @@ Esta es una version de un API creada con mongo DB, usando programacion reactiva 
 
 ## Uso
 
-### Customer (the customer API Methods)
-- **GET - customer all (without parameters):**
+### Customer (the customerEntity API Methods)
+- **GET - customerEntity all (without parameters):**
     ````
     *** METHOD: GET ***
-    URL: http://localhost:8080/api/v1/customer/list
+    URL: http://localhost:8080/api/v1/customerEntity/list
     ````
-- **GET - find by id customer:** change number **667c425ed3fc7a6ce9e1b892** for the customer id
+- **GET - find by id customerEntity:** change number **667c425ed3fc7a6ce9e1b892** for the customerEntity id
     ````
     *** METHOD: GET ***
-    URL: http://localhost:8080/api/v1/customer/findbyid/667c42cbd3fc7a6ce9e1b893
+    URL: http://localhost:8080/api/v1/customerEntity/findbyid/667c42cbd3fc7a6ce9e1b893
     ````
-- **POST - save customer with body in JSON:**
+- **POST - save customerEntity with body in JSON:**
     ````
     *** METHOD: POST ***
-    URL: http://localhost:8080/api/v1/customer/registre
+    URL: http://localhost:8080/api/v1/customerEntity/registre
     ````
     ````
     {
@@ -35,10 +35,10 @@ Esta es una version de un API creada con mongo DB, usando programacion reactiva 
         "clientType": "PERSONAL"
     }
     ````
-- **PUT - update customer with body in JSON and variable path (667c42cbd3fc7a6ce9e1b893):**
+- **PUT - update customerEntity with body in JSON and variable path (667c42cbd3fc7a6ce9e1b893):**
     ````
     *** METHOD: PUT ***
-    URL: http://localhost:8080/api/v1/customer/updatebyid/667c42cbd3fc7a6ce9e1b893
+    URL: http://localhost:8080/api/v1/customerEntity/updatebyid/667c42cbd3fc7a6ce9e1b893
     ````
     ````
     {
@@ -49,8 +49,8 @@ Esta es una version de un API creada con mongo DB, usando programacion reactiva 
         "clientType": "PERSONAL"
     }
     ````
-- **DELETE - delete customer with variable path (667c42cbd3fc7a6ce9e1b893):**
+- **DELETE - delete customerEntity with variable path (667c42cbd3fc7a6ce9e1b893):**
     ````
     *** METHOD: DELETE ***
-    URL: http://localhost:8080/api/v1/customer/deletebyid/667c42cbd3fc7a6ce9e1b893
+    URL: http://localhost:8080/api/v1/customerEntity/deletebyid/667c42cbd3fc7a6ce9e1b893
     ````
