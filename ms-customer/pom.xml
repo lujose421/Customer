@@ -39,7 +39,7 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- new add dependency - start -->
+        <!-- dependency add start -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
@@ -60,7 +60,7 @@
             <artifactId>jackson-databind-nullable</artifactId>
             <version>0.2.6</version>
         </dependency>
-        <!-- new add dependency - end -->
+        <!-- dependency add end -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -85,7 +85,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.nttdata.customer.MsCustomerApplication</mainClass> <!-- revisar por que colocan esto -->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -97,24 +96,21 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.1.0</version>
+                <version>7.6.0</version>
                 <executions>
                     <execution>
+                        <id>generate</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>
-                                ${project.basedir}/src/main/resources/swagger/OpenApi.yml
-                            </inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/swagger/OpenApi.yml</inputSpec>
                             <generatorName>spring</generatorName>
+                            <output>${project.build.directory}/generated-sources</output>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                             <packageName>com.banking.openapi</packageName>
                             <apiPackage>com.banking.openapi.api</apiPackage>
                             <modelPackage>com.banking.openapi.model</modelPackage>
-                            <typeMappings>
-                                <typeMapping>DateTime=Instant</typeMapping>
-                                <typeMapping>Date=Date</typeMapping>
-                            </typeMappings>
                             <configOptions>
                                 <reactive>true</reactive>
                                 <openApiNullable>true</openApiNullable>
@@ -122,6 +118,7 @@
                                 <useSwaggerUI>true</useSwaggerUI>
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>
+                                <sourceFolder>generated-sources</sourceFolder>
                             </configOptions>
                         </configuration>
                     </execution>

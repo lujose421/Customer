@@ -23,13 +23,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CustomerDTO'
-        204:
-          description: CustomerEntity not content
-          content:
-            application/json:
-              schema:
-                default: []
+                  $ref: '#/components/schemas/CustomerResponse'
+
     post:
       tags:
         - Customer
@@ -41,7 +36,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerDTO'
+              $ref: '#/components/schemas/CustomerRequest'
         required: true
       responses:
         201:
@@ -49,7 +44,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerDTO'
+                $ref: '#/components/schemas/CustomerResponse'
+
   /api/v1/customer/{id}:
     get:
       tags:
@@ -70,9 +66,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerDTO'
-        404:
-          description: CustomerEntity not found
+                $ref: '#/components/schemas/CustomerResponse'
+
     put:
       tags:
         - Customer
@@ -91,7 +86,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerDTO'
+              $ref: '#/components/schemas/CustomerRequest'
         required: true
       responses:
         200:
@@ -99,13 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerDTO'
-        204:
-          description: CustomerEntity not content
-          content:
-            application/json:
-              schema:
-                default: []
+                $ref: '#/components/schemas/CustomerResponse'
     delete:
       tags:
         - Customer
@@ -134,54 +123,75 @@ paths:
                 $ref: '#/components/schemas/ResponseDTO'
 components:
   schemas:
-    CustomerDTO:
-      type: object
+    CustomerRequest:
       required:
         - name
         - lastName
         - documentType
         - documentNumber
         - clientType
+      type: object
       properties:
-        id:
-          type: string
         name:
           type: string
           example: John
           pattern: '^[A-Za-z]+$'
-          nullable: false
-          minLength: 1
         lastName:
           type: string
           example: James
           pattern: '^[A-Za-z]+$'
-          nullable: false
-          minLength: 1
         reason:
           type: string
-          example: "EMPRESA TRANSPORTE SAC"
+          example: 'EMPRESA TRANSPORTE SAC'
         documentType:
           type: string
           enum:
             - DNI
             - RUC
           example: DNI
-          nullable: false
         documentNumber:
           type: string
-          example: 45871236
+          example: '45871236'
           pattern: '^[0-9]+$'
-          nullable: false
         clientType:
           type: string
           enum:
             - STAFF
             - BUSINESS
-          example: staff
-          nullable: false
+          example: STAFF
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '6680e3e7878a8f7d4d998569'
+        name:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        reason:
+          type: string
+          example: 'EMPRESA TRANSPORTE SAC'
+        documentType:
+          type: string
+          enum:
+            - DNI
+            - RUC
+          example: DNI
+        documentNumber:
+          type: string
+          example: '45871236'
+        clientType:
+          type: string
+          enum:
+            - STAFF
+            - BUSINESS
+          example: STAFF
     ResponseDTO:
       type: object
       properties:
         message:
           type: string
-          example: "Message response"
+          example: 'Message response'

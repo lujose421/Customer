@@ -1,33 +1,135 @@
 package com.nttdata.customer.utils;
 
-import com.banking.openapi.model.CustomerDTO;
+import com.banking.openapi.model.CustomerRequest;
+import com.banking.openapi.model.CustomerResponse;
+import com.nttdata.customer.exception.types.ValidationException;
 import com.nttdata.customer.pesistence.entity.CustomerEntity;
 import com.nttdata.customer.pesistence.entity.enums.ClientType;
 import com.nttdata.customer.pesistence.entity.enums.DocumentType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AppUtils {
 
-    public static CustomerDTO entityToDto(CustomerEntity customer) {
-        CustomerDTO newCustomerDTO = new CustomerDTO();
-        newCustomerDTO.setId(customer.getId());
-        newCustomerDTO.setName(customer.getName());
-        newCustomerDTO.setLastName(customer.getLastName());
-        newCustomerDTO.setReason(customer.getReason());
-        newCustomerDTO.setDocumentType(CustomerDTO.DocumentTypeEnum.fromValue(customer.getDocumentType().getValue()));
-        newCustomerDTO.setDocumentNumber(customer.getDocumentNumber());
-        newCustomerDTO.setClientType(CustomerDTO.ClientTypeEnum.fromValue(customer.getClientType().getValue()));
-        return newCustomerDTO;
+    public static CustomerResponse entityToDto(CustomerEntity customer) {
+        CustomerResponse customerResponse = new CustomerResponse();
+        customerResponse.setId(customer.getId());
+        customerResponse.setName(customer.getName());
+        customerResponse.setLastName(customer.getLastName());
+        customerResponse.setReason(customer.getReason());
+        customerResponse.setDocumentType(CustomerResponse.DocumentTypeEnum.fromValue(customer.getDocumentType().getValue()));
+        customerResponse.setDocumentNumber(customer.getDocumentNumber());
+        customerResponse.setClientType(CustomerResponse.ClientTypeEnum.fromValue(customer.getClientType().getValue()));
+        return customerResponse;
     }
 
-    public static CustomerEntity dtoToEntity(CustomerDTO customerDTO) {
-        CustomerEntity newCustomer = new CustomerEntity();
-        newCustomer.setId(customerDTO.getId());
-        newCustomer.setName(customerDTO.getName());
-        newCustomer.setLastName(customerDTO.getLastName());
-        newCustomer.setReason(customerDTO.getReason());
-        newCustomer.setDocumentType(DocumentType.valueOf(customerDTO.getDocumentType().getValue()));
-        newCustomer.setDocumentNumber(customerDTO.getDocumentNumber());
-        newCustomer.setClientType(ClientType.valueOf(customerDTO.getClientType().getValue()));
-        return newCustomer;
+    public static CustomerEntity dtoToEntity(CustomerRequest customerRequest) {
+        Map<Integer, String> errors = new HashMap<>();
+        CustomerEntity customerEntity = new CustomerEntity();
+
+        validateNameAndLastName(customerRequest, errors, customerEntity);
+        validateReason(customerRequest, errors, customerEntity);
+        validateDocumentType(customerRequest, errors, customerEntity);
+        validateDocumentNumber(customerRequest, errors, customerEntity);
+        validateClientType(customerRequest, errors, customerEntity);
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
+
+        return customerEntity;
+    }
+
+    private static void validateNameAndLastName(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        if (customerRequest.getDocumentType().getValue().equals("DNI")) {
+            validateName(customerRequest.getName(), errors, customerEntity);
+            validateLastName(customerRequest.getLastName(), errors, customerEntity);
+        } else {
+            if (customerRequest.getName() == null || customerRequest.getName().isEmpty()) {
+                errors.put(1, "Name is not null or empty");
+            } else if (!customerRequest.getName().matches("^[A-Za-z\\s]+$")) {
+                errors.put(1, "Name can only contain letters");
+            } else {
+                customerEntity.setName(customerRequest.getName());
+            }
+
+            if (customerRequest.getLastName() == null || customerRequest.getLastName().isEmpty()) {
+                errors.put(2, "Last name is not null or empty");
+            } else if (!customerRequest.getLastName().matches("^[A-Za-z\\s]+$")) {
+                errors.put(2, "Last name can only contain letters");
+            } else {
+                customerEntity.setLastName(customerRequest.getLastName());
+            }
+        }
+    }
+
+    private static void validateReason(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        if (!customerRequest.getDocumentType().getValue().equals("DNI")) {
+            if (customerRequest.getReason() == null || customerRequest.getReason().isEmpty()) {
+                errors.put(3, "Reason is not null or empty");
+            } else if (!customerRequest.getReason().matches("^[a-zA-Z0-9 &.,/\\-()°]+$")) {
+                errors.put(3, "Reason can only contain letters, numbers, and special characters (&.,/\\-()°)");
+            } else {
+                customerEntity.setReason(customerRequest.getReason());
+            }
+        } else {
+            customerEntity.setReason(customerRequest.getReason());
+        }
+    }
+
+    private static void validateDocumentType(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        try {
+            DocumentType documentType = DocumentType.fromValue(customerRequest.getDocumentType().getValue());
+            customerEntity.setDocumentType(documentType);
+        } catch (IllegalArgumentException e) {
+            errors.put(4, "Invalid document type: " + customerRequest.getDocumentType().getValue());
+        }
+    }
+
+    private static void validateDocumentNumber(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        String documentNumber = customerRequest.getDocumentNumber();
+        if (customerRequest.getDocumentType().getValue().equals("DNI")) {
+            if (documentNumber == null || !documentNumber.matches("\\d{8}")) {
+                errors.put(5, "Document number must be exactly 8 digits for DNI and contain only numbers");
+            } else {
+                customerEntity.setDocumentNumber(documentNumber);
+            }
+        } else {
+            if (documentNumber == null || !documentNumber.matches("\\d{11}")) {
+                errors.put(5, "Document number must be exactly 11 digits for RUC and contain only numbers");
+            } else {
+                customerEntity.setDocumentNumber(documentNumber);
+            }
+        }
+    }
+
+    private static void validateClientType(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        try {
+            ClientType clientType = ClientType.fromValue(customerRequest.getClientType().getValue());
+            customerEntity.setClientType(clientType);
+        } catch (IllegalArgumentException e) {
+            errors.put(6, "Invalid client type: " + customerRequest.getClientType().getValue());
+        }
+    }
+
+    private static void validateName(String name, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        if (name == null || name.isEmpty()) {
+            errors.put(1, "Name is not null or empty");
+        } else if (!name.matches("^[A-Za-z\\s]+$")) {
+            errors.put(1, "Name can only contain letters");
+        } else {
+            customerEntity.setName(name);
+        }
+    }
+
+    private static void validateLastName(String name, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        if (name == null || name.isEmpty()) {
+            errors.put(2, "Last name is not null or empty");
+        } else if (!name.matches("^[A-Za-z\\s]+$")) {
+            errors.put(2, "Last Name can only contain letters");
+        } else {
+            customerEntity.setLastName(name);
+        }
     }
 }

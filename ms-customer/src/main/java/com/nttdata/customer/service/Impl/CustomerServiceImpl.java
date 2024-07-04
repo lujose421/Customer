@@ -1,6 +1,7 @@
 package com.nttdata.customer.service.Impl;
 
-import com.banking.openapi.model.CustomerDTO;
+import com.banking.openapi.model.CustomerRequest;
+import com.banking.openapi.model.CustomerResponse;
 import com.banking.openapi.model.ResponseDTO;
 import com.nttdata.customer.exception.types.NotFoundException;
 import com.nttdata.customer.pesistence.entity.CustomerEntity;
@@ -28,10 +29,10 @@ public class CustomerServiceImpl implements CustomerService {
     private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     @Override
-    public Mono<ResponseEntity<Flux<CustomerDTO>>> getAllCustomer() {
+    public Mono<ResponseEntity<Flux<CustomerResponse>>> getCustomer() {
         logger.info("service customerRepository - ini");
 
-        Flux<CustomerDTO> customerDTOFlux = this.customerRepository.findAll()
+        Flux<CustomerResponse> customerDTOFlux = this.customerRepository.findAll()
                 .doOnError(error -> logger.error("Error getAllCustomer: ", error))
                 .map(AppUtils::entityToDto)
                 //.doOnNext(customerDTO -> logger.info("customer all service: {}", customerDTO))
@@ -41,7 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Mono<ResponseEntity<CustomerDTO>> getCustomerById(String id) {
+    public Mono<ResponseEntity<CustomerResponse>> getCustomerById(String id) {
         logger.info("service getCustomerById - ini");
 
         return this.customerRepository.findById(id)
@@ -52,14 +53,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Mono<ResponseEntity<CustomerDTO>> createCustomer(CustomerDTO customerDTO) {
+    public Mono<ResponseEntity<CustomerResponse>> createCustomer(CustomerRequest customerRequest) {
         logger.info("service createCustomer - ini");
 //        Mono<CustomerDTO> dto = this.customerRepository.findByDocumentNumber(customerDTO.getDocumentNumber())
 //                .map(AppUtils::entityToDto)
 //                .switchIfEmpty(Mono.error(new NotFoundException(CUSTOMER_ALREADY_EXISTS, customerDTO.getDocumentNumber())));
 //        return Mono.just(ResponseEntity.ok(new CustomerDTO()));
 
-        return Mono.just(customerDTO)
+        return Mono.just(customerRequest)
                 //.doOnError(Mono.error(new IllegalArgumentException())
                 .doOnError(error -> logger.error("Error createCustomer: ", error))
                 .map(AppUtils::dtoToEntity)
@@ -73,13 +74,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Mono<CustomerDTO> updateCustomerById(String id, CustomerDTO customerDTO) {
+    public Mono<CustomerResponse> updateCustomerById(String id, CustomerRequest customerRequest) {
         logger.info("service updateCustomerById - ini");
         // Using functional programing
         return this.customerRepository.findById(id)
                 .doOnError(error -> logger.error("Error updateCustomerById: ", error))
                 .flatMap(existCustomerEntity -> {
-                    CustomerEntity updatedCustomer = AppUtils.dtoToEntity(customerDTO);
+                    CustomerEntity updatedCustomer = AppUtils.dtoToEntity(customerRequest);
                     updatedCustomer.setId(existCustomerEntity.getId());
                     logger.info("customer by id: {}, body customer: {}", existCustomerEntity.getId(), updatedCustomer);
                     return this.customerRepository.save(updatedCustomer);
