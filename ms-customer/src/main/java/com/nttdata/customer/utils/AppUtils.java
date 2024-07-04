@@ -28,7 +28,8 @@ public class AppUtils {
         Map<Integer, String> errors = new HashMap<>();
         CustomerEntity customerEntity = new CustomerEntity();
 
-        validateNameAndLastName(customerRequest, errors, customerEntity);
+        validateName(customerRequest, errors, customerEntity);
+        validateLastName(customerRequest, errors, customerEntity);
         validateReason(customerRequest, errors, customerEntity);
         validateDocumentType(customerRequest, errors, customerEntity);
         validateDocumentNumber(customerRequest, errors, customerEntity);
@@ -41,25 +42,32 @@ public class AppUtils {
         return customerEntity;
     }
 
-    private static void validateNameAndLastName(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
-        if (customerRequest.getDocumentType().getValue().equals("DNI")) {
-            validateName(customerRequest.getName(), errors, customerEntity);
-            validateLastName(customerRequest.getLastName(), errors, customerEntity);
+    private static void validateName(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        if (!customerRequest.getDocumentType().getValue().equals("DNI")) {
+            customerEntity.setName("");
         } else {
-            if (customerRequest.getName() == null || customerRequest.getName().isEmpty()) {
+            String name = customerRequest.getName();
+            if (name == null || name.isEmpty()) {
                 errors.put(1, "Name is not null or empty");
-            } else if (!customerRequest.getName().matches("^[A-Za-z\\s]+$")) {
+            } else if (!name.matches("^[A-Za-z\\s]+$")) {
                 errors.put(1, "Name can only contain letters");
             } else {
-                customerEntity.setName(customerRequest.getName());
+                customerEntity.setName(name);
             }
+        }
+    }
 
-            if (customerRequest.getLastName() == null || customerRequest.getLastName().isEmpty()) {
+    private static void validateLastName(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
+        if (!customerRequest.getDocumentType().getValue().equals("DNI")) {
+            customerEntity.setLastName("");
+        } else {
+            String lastName = customerRequest.getLastName();
+            if (lastName == null || lastName.isEmpty()) {
                 errors.put(2, "Last name is not null or empty");
-            } else if (!customerRequest.getLastName().matches("^[A-Za-z\\s]+$")) {
+            } else if (!lastName.matches("^[A-Za-z\\s]+$")) {
                 errors.put(2, "Last name can only contain letters");
             } else {
-                customerEntity.setLastName(customerRequest.getLastName());
+                customerEntity.setLastName(lastName);
             }
         }
     }
@@ -74,7 +82,7 @@ public class AppUtils {
                 customerEntity.setReason(customerRequest.getReason());
             }
         } else {
-            customerEntity.setReason(customerRequest.getReason());
+            customerEntity.setReason("");
         }
     }
 
@@ -105,31 +113,22 @@ public class AppUtils {
     }
 
     private static void validateClientType(CustomerRequest customerRequest, Map<Integer, String> errors, CustomerEntity customerEntity) {
-        try {
+
+        if (customerRequest.getDocumentType().getValue().equals("DNI")) {
+            customerEntity.setClientType(ClientType.STAFF);
+        } else {
+            customerEntity.setClientType(ClientType.BUSINESS);
+        }
+
+        if (!customerEntity.getClientType().getValue().equals(customerRequest.getClientType().getValue())) {
+            errors.put(6, "Invalid client type for the given document type. Expected: " + customerEntity.getClientType().getValue());
+        }
+
+        /*try {
             ClientType clientType = ClientType.fromValue(customerRequest.getClientType().getValue());
             customerEntity.setClientType(clientType);
         } catch (IllegalArgumentException e) {
             errors.put(6, "Invalid client type: " + customerRequest.getClientType().getValue());
-        }
-    }
-
-    private static void validateName(String name, Map<Integer, String> errors, CustomerEntity customerEntity) {
-        if (name == null || name.isEmpty()) {
-            errors.put(1, "Name is not null or empty");
-        } else if (!name.matches("^[A-Za-z\\s]+$")) {
-            errors.put(1, "Name can only contain letters");
-        } else {
-            customerEntity.setName(name);
-        }
-    }
-
-    private static void validateLastName(String name, Map<Integer, String> errors, CustomerEntity customerEntity) {
-        if (name == null || name.isEmpty()) {
-            errors.put(2, "Last name is not null or empty");
-        } else if (!name.matches("^[A-Za-z\\s]+$")) {
-            errors.put(2, "Last Name can only contain letters");
-        } else {
-            customerEntity.setLastName(name);
-        }
+        }*/
     }
 }
