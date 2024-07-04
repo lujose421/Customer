@@ -48,22 +48,12 @@ public class CustomerController implements CustomerApi {
     public Mono<ResponseEntity<CustomerResponse>> updateCustomerById(
             @PathVariable("id") String id,
             @RequestBody Mono<CustomerRequest> customerRequest, ServerWebExchange exchange) {
-        logger.info("endpoint updateCustomerById - ini");
-        return customerRequest
-                .flatMap(dto -> this.customerService.updateCustomerById(id, dto))
-                .doOnNext(customer -> logger.info("New customer: {}", customer))
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).build())
-                .doOnTerminate(() -> logger.info("endpoint updateCustomerById - end"));
+        return customerRequest.flatMap(dto -> this.customerService.updateCustomerById(id, dto));
     }
 
     @Override
     public Mono<ResponseEntity<ResponseDTO>> deleteCustomerById(
             @PathVariable("id") String id, ServerWebExchange exchange) {
-        logger.info("endpoint deleteCustomerById - ini");
-        return this.customerService.deleteCustomerById(id)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).build())
-                .doOnTerminate(() -> logger.info("endpoint deleteCustomerById - end"));
+        return this.customerService.deleteCustomerById(id);
     }
 }
